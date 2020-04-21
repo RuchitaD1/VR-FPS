@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ZombieController : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class ZombieController : MonoBehaviour
 
     public float moveSpeed = 1.5f;
     private bool _isDead, _isAttacking;
+    private bool quit = false;
 
     private void Awake()
     {
@@ -25,27 +27,37 @@ public class ZombieController : MonoBehaviour
        _zombie = GetComponent<GameObject>();
 
     }
+    
     private void Update()
     {
-        // During each frame we rotate the zombie toward the player. This   allows for player
-        // movement during runtime
+		// During each frame we rotate the zombie toward the player. This   allows for player
+		// movement during runtime
+		if (quit)
+		{
+            
+            SceneManager.LoadScene("terrain");
+            Application.Quit();
+		}
+
         _target = GameObject.FindGameObjectWithTag("Player");
         Vector3 targetPostition = new Vector3(
       _target.transform.position.x,
         0f, _target.transform.position.z);
         transform.LookAt(targetPostition);
-    }
-
-    private void FixedUpdate()
-    {
-        // In FixedUpdate we move the prefab, if it is alive and not   
-       // attacking
-      if (!_isDead && !_isAttacking)
+        if(!_isDead && !_isAttacking)
         {
             _rigidbody.velocity = (_target.transform.position -
             transform.position).normalized * moveSpeed;
         }
+        
     }
+
+   // private void FixedUpdate()
+    //{
+        // In FixedUpdate we move the prefab, if it is alive and not   
+       // attacking
+     // i
+    //}
     public void Die()
     {
         // Once we have decided to kill off a zombie, we must set its local
@@ -66,4 +78,26 @@ public class ZombieController : MonoBehaviour
     yield return new WaitForSeconds(1.5f);
         Destroy(_zombie);
     }
+    private void OnCollisionEnter(Collision other)
+    {
+        // This code will initiate an attack when the player GameObject intersects 
+        // with a zombie collider
+        
+        if (other.collider.tag == "Player" && !_isDead)
+        {
+            moveSpeed += 1;
+            _isAttacking = true;
+            _animator.SetBool("Attack", true);
+
+            //console.Write("attack!");
+            //StartCoroutine(GameObject.FindObjectOfType<FadeInFadeOut>().FadeAndLoadScene(FadeInFadeOut.FadeDirection.Out, "terrain"));
+
+            quit = true;
+            
+        }
+ 
+    }
+
+    
+
 }
