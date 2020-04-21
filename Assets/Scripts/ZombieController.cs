@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class ZombieController : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -34,18 +34,13 @@ public class ZombieController : MonoBehaviour
       _target.transform.position.x,
         0f, _target.transform.position.z);
         transform.LookAt(targetPostition);
-    }
-
-    private void FixedUpdate()
-    {
-        // In FixedUpdate we move the prefab, if it is alive and not   
-       // attacking
-      if (!_isDead && !_isAttacking)
+        if (!_isDead && !_isAttacking)
         {
             _rigidbody.velocity = (_target.transform.position -
             transform.position).normalized * moveSpeed;
         }
     }
+
     public void Die()
     {
         // Once we have decided to kill off a zombie, we must set its local
@@ -66,4 +61,31 @@ public class ZombieController : MonoBehaviour
     yield return new WaitForSeconds(1.5f);
         Destroy(_zombie);
     }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        // This code will initiate an attack when the player GameObject intersects 
+        // with a zombie collider
+        if (other.collider.tag == "Player" && !_isDead)
+        {
+            _isAttacking = true;
+            _animator.SetBool("Attack", true);
+            StartCoroutine(PlayerDie());
+            
+
+        }
+    }
+
+    IEnumerator PlayerDie()
+    {
+        
+        yield return new WaitForSeconds(1.5f);
+        SceneManager.LoadScene("terrain");
+
+    }
+
+
+
+
+
 }
