@@ -21,7 +21,7 @@ public class ZombieController : MonoBehaviour
         _animator = GetComponent<Animator>();
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<CapsuleCollider>();
-        
+
        _zombie = GetComponent<GameObject>();
 
     }
@@ -34,6 +34,7 @@ public class ZombieController : MonoBehaviour
       _target.transform.position.x,
         0f, _target.transform.position.z);
         transform.LookAt(targetPostition);
+
         if (!_isDead && !_isAttacking)
         {
             _rigidbody.velocity = (_target.transform.position -
@@ -55,7 +56,7 @@ public class ZombieController : MonoBehaviour
 
     IEnumerator DestroyThis()
     {
-    // Before destroying the prefab, we will wait until it's animation   
+    // Before destroying the prefab, we will wait until it's animation
     //is complete
     // the value listed here is the length of the walk cycle
     yield return new WaitForSeconds(1.5f);
@@ -64,25 +65,33 @@ public class ZombieController : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        // This code will initiate an attack when the player GameObject intersects 
+        // This code will initiate an attack when the player GameObject intersects
         // with a zombie collider
         if (other.collider.tag == "Player" && !_isDead)
         {
             _isAttacking = true;
             _animator.SetBool("Attack", true);
             StartCoroutine(PlayerDie());
-            
+
 
         }
     }
 
     IEnumerator PlayerDie()
     {
-        
+
         yield return new WaitForSeconds(1.5f);
         SceneManager.LoadScene("terrain");
 
     }
+
+    private void Attack()
+   {
+       if (_isAttacking)
+       {
+           _collider.GetComponent<PlayerHealth>().TakeDamage(10);
+       }
+   }
 
 
 
