@@ -47,7 +47,7 @@ public class ZombieController : MonoBehaviour
         // Once we have decided to kill off a zombie, we must set its local
         // variables to their default values.
         _rigidbody.velocity = Vector3.zero;
-        _collider.enabled = false;
+ 
         _isDead = true;
         _animator.SetBool("Death", true);
         _animator.SetInteger("DeathAnimationIndex", Random.Range(0, 3));
@@ -71,7 +71,12 @@ public class ZombieController : MonoBehaviour
         {
             _isAttacking = true;
             _animator.SetBool("Attack", true);
-            StartCoroutine(PlayerDie());
+            other.collider.GetComponent<PlayerHealth>().TakeDamage(10);
+            if (other.collider.GetComponent<PlayerHealth>().PlayerDead())
+            {
+                StartCoroutine(PlayerDie());
+
+            }
 
 
         }
@@ -85,13 +90,11 @@ public class ZombieController : MonoBehaviour
 
     }
 
-    private void Attack()
-   {
-       if (_isAttacking)
-       {
-           _collider.GetComponent<PlayerHealth>().TakeDamage(10);
-       }
-   }
+    public void increaseSpeed()
+	{
+        moveSpeed += moveSpeed*0.25f;
+	}
+
 
 
 

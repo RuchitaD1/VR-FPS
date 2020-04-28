@@ -20,4 +20,9 @@ public class PlayerHealth : MonoBehaviour
         _currentHealth -= damage;
         HealthBar.value = _currentHealth;
     }
+
+    public bool PlayerDead()
+    {
+        return _currentHealth == 0;
+    }
 }

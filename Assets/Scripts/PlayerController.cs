@@ -4,7 +4,14 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    Vector3 hitPoint = new Vector3(0, 1, 0);
+    public GameObject zombiePrefab;
+    Vector3 hitPoint = new Vector3(1, 1, 0);
+    GameObject zombie;
+    void Start() {
+
+        zombie = Instantiate(zombiePrefab);
+    }
+
 
     void Update()
     {
@@ -29,7 +36,11 @@ public class PlayerController : MonoBehaviour
             ZombieController z =
             hit.collider.GetComponent<ZombieController>();
             if (z != null)
+            {
+                zombie.GetComponent<ZombieController>().moveSpeed += 1;
                 z.Die();
+                
+            }
 
         }
     }
