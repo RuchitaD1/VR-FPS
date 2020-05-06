@@ -7,6 +7,8 @@ public class PlayerController : MonoBehaviour
     public GameObject zombiePrefab;
     Vector3 hitPoint = new Vector3(1, 1, 0);
     GameObject zombie;
+    public GameObject Weapon;
+
     void Start() {
 
         zombie = Instantiate(zombiePrefab);
@@ -26,9 +28,13 @@ public class PlayerController : MonoBehaviour
     // on a successful hit the value of z will be the name of the GameObject
     void Shoot()
     {
+                
+        // We set the origin of the ray 
+        // to gun barrel position so it 
+        // doesn't start at the camera position
+        
         RaycastHit hit;
-        if (Physics.Raycast(Camera.main.transform.position,
-        Camera.main.transform.forward, out hit))
+        if (Physics.Raycast(Weapon.transform.position, Weapon.transform.forward, out hit))
         {
             
             hitPoint = hit.point;
@@ -37,7 +43,6 @@ public class PlayerController : MonoBehaviour
             hit.collider.GetComponent<ZombieController>();
             if (z != null)
             {
-                zombie.GetComponent<ZombieController>().moveSpeed += 1;
                 z.Die();
                 
             }
