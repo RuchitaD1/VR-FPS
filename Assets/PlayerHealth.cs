@@ -9,6 +9,7 @@ public class PlayerHealth : MonoBehaviour
     public float Health = 100;
 
     private float _currentHealth = 0.0f;
+    public Text healthText;
 
     void Start ()
     {
@@ -19,10 +20,16 @@ public class PlayerHealth : MonoBehaviour
     {
         _currentHealth -= damage;
         HealthBar.value = _currentHealth;
+        setHealthText();
     }
 
     public bool PlayerDead()
     {
         return _currentHealth == 0;
     }
+
+    void setHealthText()
+	{
+        healthText.text = _currentHealth.ToString();
+	}
 }
